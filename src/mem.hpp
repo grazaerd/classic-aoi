@@ -30,7 +30,7 @@ namespace Memory {
 		const uint8_t* start = std::bit_cast<uint8_t*>(moduleBase);
 		const std::size_t size = static_cast<std::size_t>(MODINF.SizeOfImage);
 
-		constexpr auto hexToByte = [](char h, char l) noexcept -> uint8_t {
+		static constexpr auto hexToByte = [](char h, char l) noexcept -> uint8_t {
 			auto hexVal = [](char c) noexcept -> uint8_t {
 				return static_cast<uint8_t>(
 					(c >= '0' && c <= '9') ? (c - '0') :
