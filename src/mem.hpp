@@ -1,7 +1,6 @@
 #ifndef MEM_HPP
 #define MEM_HPP
 
-#include <algorithm>
 #include <bit>
 #include <cstdint>
 #include <charconv>
@@ -78,6 +77,42 @@ namespace Memory {
 		VirtualProtectEx(hProcess, static_cast<void*>(address), sizeof(uint64_t), PAGE_EXECUTE_READWRITE, &oldProtect);
 		*address = std::bit_cast<uint64_t>(fn);
 		VirtualProtectEx(hProcess, static_cast<void*>(address), sizeof(uint64_t), oldProtect, &oldProtect);
+	}
+	
+	inline const char* btos(const bool membool) {
+		if (membool) {
+			return "True";
+		}
+		return "False";
+	}
+	
+	inline bool stob(std::string_view str) {
+		if (str == "True" || str == "true") { // should be using stricmp but meh
+			return true;
+		} else if (str == "False" || str == "false") {
+			return false;
+		}
+		return false;
+	}
+	
+	inline std::string ftos(const float memfloat) {
+		return std::format("{:.3f}", memfloat);
+	}
+	
+	inline std::string itos(const int memint) {
+		return std::format("{}", memint);
+	}
+	
+	inline int stoimem(std::string_view str){
+		int value = 120;
+		std::from_chars(str.data(), str.data() + str.size(), value);
+		return value;
+	}
+	
+	inline float stofmem(std::string_view str){
+		float value = 0.0F;
+		std::from_chars(str.data(), str.data() + str.size(), value);
+		return value;
 	}
 	
 }
