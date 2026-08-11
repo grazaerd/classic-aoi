@@ -21,6 +21,7 @@
 namespace Memory {
 
     inline const uintptr_t moduleBase = std::bit_cast<uintptr_t>(GetModuleHandleA(nullptr));
+    
     inline MODULEINFO MODINF;
 
     inline void* hProcess = OpenProcess(PROCESS_VM_READ | PROCESS_VM_OPERATION, false, GetCurrentProcessId());
@@ -64,11 +65,13 @@ namespace Memory {
 			address = 0;
 		}
 	}
+	
 	inline uint32_t FindRVA(const uintptr_t& module, const void* Address, const uint8_t MinLen, const uint8_t MaxLen) {
 		// https://godbolt.org/z/hKrxf8aEE
 		const uint32_t RVA = *std::bit_cast<uint32_t*>(std::bit_cast<uintptr_t>(Address) + MinLen);
 		return static_cast<uint32_t>((RVA + static_cast<uint32_t>(std::bit_cast<uintptr_t>(Address) + MaxLen)) - module);
 	}
+	
 	template <typename Type, typename Func>
 	inline void IatMod(Type* address, Func fn) {
 		DWORD oldProtect;
@@ -76,6 +79,7 @@ namespace Memory {
 		*address = std::bit_cast<uint64_t>(fn);
 		VirtualProtectEx(hProcess, static_cast<void*>(address), sizeof(uint64_t), oldProtect, &oldProtect);
 	}
+	
 }
 
 #endif
