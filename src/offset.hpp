@@ -2,6 +2,7 @@
 #define OFFSET_HPP
 
 #include "mem.hpp"
+#include <string_view>
 
 namespace ADRS {
     // Cam
@@ -36,8 +37,8 @@ public:
 
 private:
     // Cam
-    const char* const CamShake = "48 89 5C 24 ?? 48 89 74 24 ?? 48 89 7C 24 ?? 41 56 48 83 EC ?? 48 8B 02 48 8B FA 48 89 44 24 ?? 45 33 F6";
-    const char* const CamBlur = "40 55 53 48 8B EC 48 83 EC ?? 80 3D";
+    const std::string_view CamShake = "40 56 48 83 ec ?? 48 8b f1 48 8b 49";
+    const std::string_view CamBlur = "74 ?? F3 0F 10 49 ?? C6 05";
 
 
 };

@@ -11,16 +11,16 @@ HMODULE ourModule = nullptr;
 
 void MainThread() {
 	util::HighResSleep(5000); // this is needed for classic
+	const OFS ofs;
 	DXPORT::Initialize();
 
-	static const OFS ofs;
 	// temporary only
 	// todo fix later
 	if (ADRS::CamShake != nullptr) {
         Memory::Patch(ADRS::CamShake, "\xC3", 1);
 	}
 	if (ADRS::CamBlur != nullptr) {
-        Memory::Patch(ADRS::CamBlur, "\xC3", 1);
+        Memory::Patch(ADRS::CamBlur, "\xEB", 1);
 	}
 }
 

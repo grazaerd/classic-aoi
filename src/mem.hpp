@@ -15,6 +15,7 @@
 #include <synchapi.h>
 #include <windef.h>
 #include <winbase.h>
+#include <winnt.h>
 #include <winuser.h>
 
 namespace Memory {
@@ -23,7 +24,7 @@ namespace Memory {
 
     inline MODULEINFO MODINF;
 
-    inline void* hProcess = OpenProcess(PROCESS_VM_READ | PROCESS_VM_OPERATION, false, GetCurrentProcessId());
+    inline void* hProcess = OpenProcess(PROCESS_ALL_ACCESS, false, GetCurrentProcessId());
 
 	template<typename T>
 	inline void PatternScan(std::string_view sig, T& address) {
