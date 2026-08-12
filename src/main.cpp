@@ -6,13 +6,23 @@
 #include <bit>
 #include "dxport.hpp"
 #include "util.hpp"
-
+#include "offset.hpp"
 HMODULE ourModule = nullptr;
 
 void MainThread() {
 	util::HighResSleep(5000); // this is needed for classic
 	DXPORT::Initialize();
-} 
+
+	static const OFS ofs;
+	// temporary only
+	// todo fix later
+	if (ADRS::CamShake != nullptr) {
+        Memory::Patch(ADRS::CamShake, "\xC3", 1);
+	}
+	if (ADRS::CamBlur != nullptr) {
+        Memory::Patch(ADRS::CamBlur, "\xC3", 1);
+	}
+}
 
 BOOL DllMain(HMODULE hMod, DWORD dwReason, [[maybe_unused]] LPVOID lpReserved) {
 	switch (dwReason) {

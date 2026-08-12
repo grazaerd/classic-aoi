@@ -20,11 +20,11 @@
 namespace Memory {
 
     inline const uintptr_t moduleBase = std::bit_cast<uintptr_t>(GetModuleHandleA(nullptr));
-    
+
     inline MODULEINFO MODINF;
 
     inline void* hProcess = OpenProcess(PROCESS_VM_READ | PROCESS_VM_OPERATION, false, GetCurrentProcessId());
-	
+
 	template<typename T>
 	inline void PatternScan(std::string_view sig, T& address) {
 		const uint8_t* start = std::bit_cast<uint8_t*>(moduleBase);
@@ -64,13 +64,13 @@ namespace Memory {
 			address = 0;
 		}
 	}
-	
+
 	inline uint32_t FindRVA(const uintptr_t& module, const void* Address, const uint8_t MinLen, const uint8_t MaxLen) {
 		// https://godbolt.org/z/hKrxf8aEE
 		const uint32_t RVA = *std::bit_cast<uint32_t*>(std::bit_cast<uintptr_t>(Address) + MinLen);
 		return static_cast<uint32_t>((RVA + static_cast<uint32_t>(std::bit_cast<uintptr_t>(Address) + MaxLen)) - module);
 	}
-	
+
 	template <typename Type, typename Func>
 	inline void IatMod(Type* address, Func fn) {
 		DWORD oldProtect;
@@ -78,14 +78,23 @@ namespace Memory {
 		*address = std::bit_cast<uint64_t>(fn);
 		VirtualProtectEx(hProcess, static_cast<void*>(address), sizeof(uint64_t), oldProtect, &oldProtect);
 	}
-	
+
+    inline void Patch(void* __restrict dst, const void* __restrict src, std::uint32_t size) {
+        if (!dst || !src || size == 0) return;
+        DWORD oldProtect;
+        VirtualProtectEx(hProcess, dst, size, PAGE_EXECUTE_READWRITE, &oldProtect);
+        std::memcpy(dst, src, size);
+        FlushInstructionCache(hProcess, dst, size);
+        VirtualProtectEx(hProcess, dst, size, oldProtect, &oldProtect);
+    }
+
 	inline const char* btos(const bool membool) {
 		if (membool) {
 			return "True";
 		}
 		return "False";
 	}
-	
+
 	inline bool stob(std::string_view str) {
 		if (str == "True" || str == "true") { // should be using stricmp but meh
 			return true;
@@ -94,27 +103,27 @@ namespace Memory {
 		}
 		return false;
 	}
-	
+
 	inline std::string ftos(const float memfloat) {
 		return std::format("{:.3f}", memfloat);
 	}
-	
+
 	inline std::string itos(const int memint) {
 		return std::format("{}", memint);
 	}
-	
+
 	inline int stoimem(std::string_view str){
 		int value = 120;
 		std::from_chars(str.data(), str.data() + str.size(), value);
 		return value;
 	}
-	
+
 	inline float stofmem(std::string_view str){
 		float value = 0.0F;
 		std::from_chars(str.data(), str.data() + str.size(), value);
 		return value;
 	}
-	
+
 }
 
 #endif
