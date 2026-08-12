@@ -36,8 +36,8 @@ public:
 
 private:
     // Cam
-    const char* const CamShake = "48 89 5C 24 ?? 57 48 81 EC ?? ?? ?? ?? 0F 29 74 24 ?? 0F 29 7C 24";
-    const char* const CamBlur = "48 89 5C 24 ?? 48 89 4C 24 ?? 56 57 41 56 48 83 EC ?? 0F 29 74 24 ?? 41 8B F0";
+    const char* const CamShake = "48 89 5C 24 ?? 48 89 74 24 ?? 48 89 7C 24 ?? 41 56 48 83 EC ?? 48 8B 02 48 8B FA 48 89 44 24 ?? 45 33 F6";
+    const char* const CamBlur = "40 55 53 48 8B EC 48 83 EC ?? 80 3D";
 
 
 };
