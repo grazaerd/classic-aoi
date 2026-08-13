@@ -41,15 +41,19 @@ add_library(classic-aoi SHARED
             src/proxy.hpp
             src/proxy.def
             src/util.hpp
+            src/present.cpp
+            src/present.hpp
            )
 
 set(polyhook "${CMAKE_CURRENT_SOURCE_DIR}/lib/polyhook")
 set(mini "${CMAKE_CURRENT_SOURCE_DIR}/lib/ini")
 set(kiero "${CMAKE_CURRENT_SOURCE_DIR}/lib/kiero")
+set(imgui "${CMAKE_CURRENT_SOURCE_DIR}/lib/imgui")
 
 add_subdirectory(${polyhook})
 add_subdirectory(${mini})
 add_subdirectory(${kiero})
+add_subdirectory(${imgui})
 
 target_compile_options(PolyHook_2 PRIVATE -w)
 target_compile_options(asmjit PRIVATE -w)
@@ -60,10 +64,15 @@ target_compile_options(Zydis PRIVATE -w)
 target_include_directories(classic-aoi SYSTEM PRIVATE ${polyhook})
 target_include_directories(classic-aoi SYSTEM PRIVATE ${mini})
 target_include_directories(classic-aoi SYSTEM PRIVATE ${kiero})
+target_include_directories(classic-aoi SYSTEM PRIVATE ${imgui})
 
 target_link_libraries(classic-aoi PRIVATE PolyHook_2)
 target_link_libraries(classic-aoi PRIVATE mINI)
 target_link_libraries(classic-aoi PRIVATE winmm)
+target_link_libraries(classic-aoi PRIVATE kiero)
+target_link_libraries(classic-aoi PRIVATE imgui)
+target_link_libraries(classic-aoi PRIVATE dwmapi)
+target_link_libraries(classic-aoi PRIVATE d3dcompiler)
 
 set_target_properties(classic-aoi PROPERTIES PREFIX "")
 set_target_properties(classic-aoi PROPERTIES OUTPUT_NAME "ddraw")

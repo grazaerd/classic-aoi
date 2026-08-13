@@ -1,18 +1,24 @@
 #include "present.hpp"
 #include "util.hpp"
+#include "imgui.h"
+#include "imgui_impl_win32.h"
+#include "imgui_impl_dx11.h"
 
-using Present = HRESULT(STDMETHODCALLTYPE*)(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT Flags);
-using ResizeBuffers = HRESULT(STDMETHODCALLTYPE*)(IDXGISwapChain* pSwapChain, UINT BufferCount, UINT Width, UINT Height, DXGI_FORMAT NewFormat, UINT SwapChainFlags);
-using WNDPROC = LRESULT(STDMETHODCALLTYPE*)(HWND, UINT, WPARAM, LPARAM);
+#include <bit>
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-Present oPresent = nullptr;
-ResizeBuffers oResizeBuffers = nullptr;
+
+namespace DX11 {
+    
+using WNDPROC = LRESULT(STDMETHODCALLTYPE*)(HWND, UINT, WPARAM, LPARAM);
+
 HWND window = nullptr;
 WNDPROC oWndProc = nullptr;
 ID3D11Device* pDevice = nullptr;
 ID3D11DeviceContext* pContext = nullptr;
 ID3D11RenderTargetView* mainRenderTargetView = nullptr;
+
+bool once = false;
 
 LRESULT WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	if (ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam)) {
@@ -43,26 +49,23 @@ bool PresentInit(IDXGISwapChain* pSwapChain) {
 
 HRESULT HookPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT Flags) {
 
-    if (unlikely(mainRenderTargetView == 0)) {
+    if (unlikely(!once)) {
+        once = true;
         PresentInit(pSwapChain);
     }
 
 
-	// ImGui_ImplDX11_NewFrame();
-	// ImGui_ImplWin32_NewFrame();
-	// ImGui::NewFrame();
+	ImGui_ImplDX11_NewFrame();
+	ImGui_ImplWin32_NewFrame();
+	ImGui::NewFrame();
+	ImGui:ImGui::Text("Hello");
 
 
-
-	// ImGui::Render();
-	// if (pContext != nullptr) { pContext->OMSetRenderTargets(1, &mainRenderTargetView, nullptr); }
+	ImGui::Render();
+	if (pContext != nullptr) { pContext->OMSetRenderTargets(1, &mainRenderTargetView, nullptr); }
 	// if (initRelease) { return 0; }
-	// ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-	// if (kiero::getRenderType() != kiero::RenderType::Vulkan) {
-	//     SyncInterval = 0;
-	//     Flags = DXGI_PRESENT_ALLOW_TEARING;
-	// }
-	return oPresent(pSwapChain, SyncInterval, Flags);
+	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+	return pPresent(pSwapChain, SyncInterval, Flags);
 }
 
 HRESULT HookResizeBuffers(IDXGISwapChain* pSwapChain, UINT BufferCount, UINT Width, UINT Height, DXGI_FORMAT NewFormat, UINT SwapChainFlags) {
@@ -70,7 +73,7 @@ HRESULT HookResizeBuffers(IDXGISwapChain* pSwapChain, UINT BufferCount, UINT Wid
 		mainRenderTargetView->Release();
 		mainRenderTargetView = nullptr;
 	}
-	const HRESULT res = oResizeBuffers(pSwapChain, BufferCount, Width, Height, NewFormat, SwapChainFlags);
+	const HRESULT res = pResizeBuffers(pSwapChain, BufferCount, Width, Height, NewFormat, SwapChainFlags);
 	ID3D11Texture2D* pBuffer = nullptr;
 	pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), std::bit_cast<void**>(&pBuffer));
 	if (pBuffer != nullptr) {
@@ -79,4 +82,6 @@ HRESULT HookResizeBuffers(IDXGISwapChain* pSwapChain, UINT BufferCount, UINT Wid
 		pBuffer = nullptr;
 	}
 	return res;
+}
+
 }

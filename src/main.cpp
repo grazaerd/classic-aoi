@@ -8,6 +8,7 @@
 #include "util.hpp"
 #include "offset.hpp"
 #include "kiero.h"
+#include "present.hpp"
 
 HMODULE ourModule = nullptr;
 bool attached = false;
@@ -30,8 +31,8 @@ void MainThread() {
         util::HighResSleep(16);
         if (kiero::init(kiero::RenderType::D3D11) == kiero::Status::Success) {
             attached = true;
-            // kiero::bind(8, std::bit_cast<void**>(), std::bit_cast<void*>());
-            // kiero::bind(13, std::bit_cast<void**>(), std::bit_cast<void*>());
+            kiero::bind(8, std::bit_cast<void**>(&DX11::pPresent), std::bit_cast<void*>(&DX11::HookPresent));
+            kiero::bind(13, std::bit_cast<void**>(&DX11::pResizeBuffers), std::bit_cast<void*>(&DX11::HookResizeBuffers));
         }
     }
 }
