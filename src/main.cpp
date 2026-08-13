@@ -7,7 +7,10 @@
 #include "dxport.hpp"
 #include "util.hpp"
 #include "offset.hpp"
+#include "kiero.h"
+
 HMODULE ourModule = nullptr;
+bool attached = false;
 
 void MainThread() {
 	util::HighResSleep(5000); // this is needed for classic
@@ -22,6 +25,15 @@ void MainThread() {
 	if (ADRS::CamBlur != nullptr) {
         Memory::Patch(ADRS::CamBlur, "\xEB", 1);
 	}
+
+    while (!attached) {
+        util::HighResSleep(16);
+        if (kiero::init(kiero::RenderType::D3D11) == kiero::Status::Success) {
+            attached = true;
+            // kiero::bind(8, std::bit_cast<void**>(), std::bit_cast<void*>());
+            // kiero::bind(13, std::bit_cast<void**>(), std::bit_cast<void*>());
+        }
+    }
 }
 
 BOOL DllMain(HMODULE hMod, DWORD dwReason, [[maybe_unused]] LPVOID lpReserved) {

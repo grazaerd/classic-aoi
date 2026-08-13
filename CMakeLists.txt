@@ -45,9 +45,11 @@ add_library(classic-aoi SHARED
 
 set(polyhook "${CMAKE_CURRENT_SOURCE_DIR}/lib/polyhook")
 set(mini "${CMAKE_CURRENT_SOURCE_DIR}/lib/ini")
+set(kiero "${CMAKE_CURRENT_SOURCE_DIR}/lib/kiero")
 
 add_subdirectory(${polyhook})
 add_subdirectory(${mini})
+add_subdirectory(${kiero})
 
 target_compile_options(PolyHook_2 PRIVATE -w)
 target_compile_options(asmjit PRIVATE -w)
@@ -57,6 +59,7 @@ target_compile_options(Zydis PRIVATE -w)
 
 target_include_directories(classic-aoi SYSTEM PRIVATE ${polyhook})
 target_include_directories(classic-aoi SYSTEM PRIVATE ${mini})
+target_include_directories(classic-aoi SYSTEM PRIVATE ${kiero})
 
 target_link_libraries(classic-aoi PRIVATE PolyHook_2)
 target_link_libraries(classic-aoi PRIVATE mINI)

@@ -10,14 +10,14 @@
 #define KIERO_INCLUDE_D3D11  1 // 1 if you need D3D11 hook
 #define KIERO_INCLUDE_D3D12  0 // 1 if you need D3D12 hook
 #define KIERO_INCLUDE_OPENGL 0 // 1 if you need OpenGL hook
-#define KIERO_INCLUDE_VULKAN 1 // 1 if you need Vulkan hook
+#define KIERO_INCLUDE_VULKAN 0 // 1 if you need Vulkan hook
 #define KIERO_USE_MINHOOK    0 // 1 if you will use kiero::bind function
 #define KIERO_USE_POLYHOOK   1 // 1 if you will use polyhook
 
 #define KIERO_ARCH_X64 1
 #define KIERO_ARCH_X86 0
 
-#if defined(_M_X64)	
+#if defined(_M_X64)
 # undef  KIERO_ARCH_X64
 # define KIERO_ARCH_X64 1
 #else
