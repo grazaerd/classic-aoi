@@ -5,11 +5,12 @@
 #include "imgui_impl_dx11.h"
 
 #include <bit>
+#include <mutex>
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 namespace DX11 {
-    
+
 using WNDPROC = LRESULT(STDMETHODCALLTYPE*)(HWND, UINT, WPARAM, LPARAM);
 
 HWND window = nullptr;
@@ -46,19 +47,17 @@ bool PresentInit(IDXGISwapChain* pSwapChain) {
 
 	return true;
 }
-
+std::once_flag InitSwapChain;
 HRESULT HookPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT Flags) {
 
-    if (unlikely(!once)) {
-        once = true;
-        PresentInit(pSwapChain);
-    }
-
+    std::call_once(InitSwapChain, [&](){
+		PresentInit(pSwapChain);
+	});
 
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
-	ImGui:ImGui::Text("Hello");
+	ImGui::Text("Hello");
 
 
 	ImGui::Render();
