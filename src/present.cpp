@@ -43,6 +43,11 @@ bool PresentInit(IDXGISwapChain* pSwapChain) {
 		pContext->OMSetRenderTargets(1, &mainRenderTargetView, nullptr);
 		pBackBuffer->Release();
 		oWndProc = std::bit_cast<WNDPROC>(SetWindowLongPtrA(window, GWLP_WNDPROC, std::bit_cast<LONG_PTR>(&WndProc)));
+       	ImGui::CreateContext();
+        ImGuiIO& io = ImGui::GetIO();
+        io.ConfigFlags = ImGuiConfigFlags_NoMouseCursorChange;
+        ImGui_ImplWin32_Init(window);
+        ImGui_ImplDX11_Init(pDevice, pContext);
 	}
 
 	return true;
