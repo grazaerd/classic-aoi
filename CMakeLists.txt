@@ -31,7 +31,8 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -femulated-tls -pthread -falign-functions=16 -falign-loops=16")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -femulated-tls -pthread -falign-functions=16 -falign-loops=16")
 endif()
-
+# todo set debug
+# set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,/DEBUG")
 add_library(classic-aoi SHARED
             src/main.cpp
             src/dxport.cpp
