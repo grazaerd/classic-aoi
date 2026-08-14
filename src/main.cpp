@@ -17,7 +17,19 @@ void MainThread() {
 	util::HighResSleep(5000); // this is needed for classic
 	const OFS ofs;
 	DXPORT::Initialize();
-
+	// bypass gpk crashes
+	// void* gpk1 = nullptr;
+	// void* gpk2 = nullptr;
+	// const char* const gpk1byte = "7e ?? 49 8b f6 48 8b 0c 0e";
+	// const char* const gpk2byte = "74 ?? 48 8b 01 ff 50 ?? 33 c0 48 83 c4 ?? c3";
+	// Memory::PatternScan(gpk1byte, gpk1);
+	// Memory::PatternScan(gpk2byte, gpk2);
+	// if (gpk1 != nullptr) {
+	// 	Memory::Patch(gpk1, "\xEB", 1);
+	// }
+	// if (gpk2 != nullptr) {
+	// 	Memory::Patch(gpk2, "\xEB", 1);
+	// }
 	// temporary only
 	// todo fix later
 	if (ADRS::CamShake != nullptr) {
