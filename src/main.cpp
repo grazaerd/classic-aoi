@@ -16,6 +16,7 @@ bool attached = false;
 void MainThread() {
 	util::HighResSleep(5000); // this is needed for classic
 	const OFS ofs;
+	SaveByte::SVFunc();
 	DXPORT::Initialize();
 	// bypass gpk crashes
 	// void* gpk1 = nullptr;
