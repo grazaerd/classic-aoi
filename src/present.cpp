@@ -3,9 +3,9 @@
 #include "imgui.h"
 #include "imgui_impl_win32.h"
 #include "imgui_impl_dx11.h"
+#include "state.hpp"
 
 #include <bit>
-#include <mutex>
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -52,22 +52,43 @@ bool PresentInit(IDXGISwapChain* pSwapChain) {
 
 	return true;
 }
-std::once_flag InitSwapChain;
+
 HRESULT HookPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT Flags) {
 
-    std::call_once(InitSwapChain, [&](){
-		PresentInit(pSwapChain);
-	});
+	if(unlikely(!pDevice)) {
+	    PresentInit(pSwapChain);
+	}
 
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
-	ImGui::Text("Hello");
+	static constexpr auto flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoNav;
+	ImGui::SetNextWindowSize(ImVec2(100.0f, 100.0f), ImGuiCond_Always);
+	if (ImGui::Begin("Classic-aoi", nullptr, flags)) {
+	    if (ImGui::Checkbox("Disable Camera Shake", &ST::CamShake)) {
+
+		}
+	    if (ImGui::Checkbox("Disable Radial Blur", &ST::CamBlur)) {
+
+		}
+		ImGui::Checkbox("Modify FOV", &ST::CamFOV);
+		if (ST::CamFOV) {
+    		if (ImGui::SliderFloat("Camera FOV", &ST::FOV, ST::FOVmin, ST::FOVmax, "%.0f")) {
+
+    		}
+		}
+		ImGui::PushItemWidth(75);
+		ImGui::AlignTextToFramePadding();
+		ImGui::Text("Camera Zoom:");
+		ImGui::SameLine();
+		ImGui::InputFloat(" ", &ST::CamZoom, 0, 0, "%.0f", ImGuiInputTextFlags_CharsDecimal | ImGuiInputTextFlags_CharsNoBlank);
+		ImGui::PopItemWidth();
+
+	}
 
 
 	ImGui::Render();
 	if (pContext != nullptr) { pContext->OMSetRenderTargets(1, &mainRenderTargetView, nullptr); }
-	// if (initRelease) { return 0; }
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 	return pPresent(pSwapChain, SyncInterval, Flags);
 }

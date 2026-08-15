@@ -18,9 +18,9 @@ set(ASMJIT_NO_FOREIGN TRUE)
 set(ASMJIT_NO_AARCH64 TRUE)
 
 # -Wl,-s causes Wacatac, need to manual llvm-strip -s .dll
-set(COMMON_FLAGS "-O3 -ffast-math -march=x86-64-v2 -fuse-ld=lld -DNDEBUG -static -fno-delete-null-pointer-checks -fomit-frame-pointer -fdata-sections -ffunction-sections")
+set(COMMON_FLAGS "-O3 -flto=full -ffast-math -march=x86-64-v2 -fuse-ld=lld -DNDEBUG -static -fno-delete-null-pointer-checks -fomit-frame-pointer -fdata-sections -ffunction-sections")
 
-set(CMAKE_C_FLAGS "${COMMON_FLAGS} -fno-exceptions -fno-asynchronous-unwind-tables -fno-unwind-tables")
+set(CMAKE_C_FLAGS "${COMMON_FLAGS} -fno-asynchronous-unwind-tables -fno-unwind-tables")
 set(CMAKE_CXX_FLAGS "${COMMON_FLAGS} -fvisibility=hidden -fvisibility-inlines-hidden -fno-rtti")
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
@@ -32,7 +32,7 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -femulated-tls -pthread -falign-functions=16 -falign-loops=16")
 endif()
 # todo set debug
-# set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,/DEBUG")
+set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,/DEBUG")
 add_library(classic-aoi SHARED
             src/main.cpp
             src/dxport.cpp
