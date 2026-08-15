@@ -27,7 +27,7 @@ namespace FOV {
     void Hook() {
 
         uint64_t pFovLH = 0ull;
-		const std::string_view FovLHByte = "ff 15 ?? ?? ?? ?? 41 ff c7 48 ff c5"; // to find
+		const std::string_view FovLHByte = "FF 15 ?? ?? ?? ?? 4C 8D 84 24 ?? ?? ?? ?? 48 8B D3";
 		Memory::PatternScan(FovLHByte, pFovLH);
 		if (pFovLH != 0ull) {
 		    pFovLH = Memory::moduleBase + Memory::FindRVA(Memory::moduleBase, std::bit_cast<void*>(pFovLH), 2, 6);
