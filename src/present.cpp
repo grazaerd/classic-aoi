@@ -1,9 +1,12 @@
 #include "present.hpp"
+#include "state.hpp"
 #include "util.hpp"
 #include "imgui.h"
 #include "imgui_impl_win32.h"
 #include "imgui_impl_dx11.h"
-#include "state.hpp"
+#include "camera/camera.hpp"
+#include "mem.hpp"
+#include "config/config.hpp"
 
 #include <bit>
 
@@ -20,6 +23,7 @@ ID3D11DeviceContext* pContext = nullptr;
 ID3D11RenderTargetView* mainRenderTargetView = nullptr;
 
 bool once = false;
+bool KeyPress = false;
 
 LRESULT WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	if (ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam)) {
@@ -52,10 +56,9 @@ bool PresentInit(IDXGISwapChain* pSwapChain) {
 
 	return true;
 }
-
 HRESULT HookPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT Flags) {
 
-	if(unlikely(!pDevice)) {
+	if (unlikely(!pDevice)) {
 	    PresentInit(pSwapChain);
 	}
 
@@ -63,27 +66,22 @@ HRESULT HookPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT Flags) {
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 	static constexpr auto flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoNav;
-	ImGui::SetNextWindowSize(ImVec2(100.0f, 100.0f), ImGuiCond_Always);
-	if (ImGui::Begin("Classic-aoi", nullptr, flags)) {
-	    if (ImGui::Checkbox("Disable Camera Shake", &ST::CamShake)) {
+	ImGui::SetNextWindowSize(ImVec2(250.0f, 150.0f), ImGuiCond_Always);
 
-		}
-	    if (ImGui::Checkbox("Disable Radial Blur", &ST::CamBlur)) {
+	if ((Memory::KeyState(VK_OEM_MINUS) && Memory::KeyState(VK_OEM_PLUS)) && !KeyPress) {
+		ST::Show = !ST::Show;
+		Config::SaveConfig();
+		KeyPress = true;
+	}
 
-		}
-		ImGui::Checkbox("Modify FOV", &ST::CamFOV);
-		if (ST::CamFOV) {
-    		if (ImGui::SliderFloat("Camera FOV", &ST::FOV, ST::FOVmin, ST::FOVmax, "%.0f")) {
+	if (!(Memory::KeyState(VK_OEM_MINUS) && Memory::KeyState(VK_OEM_PLUS))) { KeyPress = false; }
 
-    		}
-		}
-		ImGui::PushItemWidth(75);
-		ImGui::AlignTextToFramePadding();
-		ImGui::Text("Camera Zoom:");
-		ImGui::SameLine();
-		ImGui::InputFloat(" ", &ST::CamZoom, 0, 0, "%.0f", ImGuiInputTextFlags_CharsDecimal | ImGuiInputTextFlags_CharsNoBlank);
-		ImGui::PopItemWidth();
+	if (ST::Show) {
+    	if (ImGui::Begin("Classic-aoi", nullptr, flags)) {
 
+    	    Cam::GUI();
+
+    	}
 	}
 
 

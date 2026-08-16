@@ -9,11 +9,16 @@ namespace ADRS {
     inline void* CamShake = nullptr;
     inline void* CamBlur = nullptr;
 
+    // FOV
+    inline void* SystemSettingsCall = nullptr;
+    inline void* SystemSettingsArgs = nullptr;
+    inline void* CamFOVCull = nullptr;
+
 }
 
 // fix this
 enum range {
-    one = 1, two, three, four, five, twenty = 20
+    one = 1, two, three, four, five, sixteen = 16, twenty = 20
 };
 
 namespace SP {
@@ -24,6 +29,8 @@ namespace SP {
     inline std::array<unsigned char, one> CamShakeSave{}; // Ret
     inline std::array<unsigned char, one> CamBlurSave{}; // Ret
 
+    inline std::array<unsigned char, sixteen> CamFOVCullSave{}; // Ret
+
 }
 
 class OFS {
@@ -33,6 +40,12 @@ public:
         Memory::PatternScan(CamShake, ADRS::CamShake);
         Memory::PatternScan(CamBlur, ADRS::CamBlur);
 
+        // FOV
+        Memory::PatternScan(SystemSettingsCall, ADRS::SystemSettingsCall);
+        Memory::PatternScan(SystemSettingsArgs, ADRS::SystemSettingsArgs);
+        Memory::PatternScan(CamFOVCull, ADRS::CamFOVCull);
+
+
     }
 
 private:
@@ -40,7 +53,10 @@ private:
     const std::string_view CamShake = "40 56 48 83 ec ?? 48 8b f1 48 8b 49";
     const std::string_view CamBlur = "74 ?? F3 0F 10 49 ?? C6 05";
 
-
+    // FOV
+    const std::string_view SystemSettingsCall = "40 53 48 83 ec ?? 83 79 ?? ?? 48 8b d9 c7 41";
+    const std::string_view SystemSettingsArgs = "48 8b 1d ?? ?? ?? ?? 48 89 b4 24";
+    const std::string_view CamFOVCull = "48 8B CB E8 ?? ?? ?? ?? 84 C0 0F 85 ?? ?? ?? ?? 48 8B 4B ?? 48 85 C9";
 };
 
 template <typename T, uint64_t size>
@@ -75,6 +91,9 @@ namespace SaveByte {
         // Cam
         SavePattern CamShake(&SP::CamShakeSave, ADRS::CamShake);
         SavePattern CamBlur(&SP::CamBlurSave, ADRS::CamBlur);
+
+        // FOV
+        SavePattern CamFOVCull(&SP::CamFOVCullSave, ADRS::CamFOVCull);
     }
 }
 

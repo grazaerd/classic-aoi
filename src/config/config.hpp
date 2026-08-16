@@ -3,8 +3,10 @@
 
 namespace Config {
 
+    void GenerateConfig();
+    void SaveConfig();
+    void GetConfig();
 
-    
 }
 
 #endif

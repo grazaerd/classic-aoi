@@ -20,16 +20,21 @@
 
 namespace Memory {
 
+    inline constexpr unsigned char ret[] = { 0xC3 };
+    inline constexpr unsigned char nop_16[] = { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 };
+
     inline const uintptr_t moduleBase = std::bit_cast<uintptr_t>(GetModuleHandleA(nullptr));
 
     inline MODULEINFO MODINF;
 
     inline void* hProcess = OpenProcess(PROCESS_ALL_ACCESS, false, GetCurrentProcessId());
 
+    inline MEMORY_BASIC_INFORMATION mbi_r {};
+
 	template<typename T>
 	inline void PatternScan(std::string_view sig, T& address) {
-		const uint8_t* start = std::bit_cast<uint8_t*>(moduleBase);
-		const std::size_t size = static_cast<std::size_t>(MODINF.SizeOfImage);
+		static const uint8_t* start = std::bit_cast<uint8_t*>(moduleBase);
+		static const size_t size = static_cast<std::size_t>(MODINF.SizeOfImage);
 
 		static constexpr auto hexToByte = [](char h, char l) noexcept -> uint8_t {
 			auto hexVal = [](char c) noexcept -> uint8_t {
@@ -64,6 +69,16 @@ namespace Memory {
 		} else {
 			address = 0;
 		}
+	}
+
+	inline bool RWPtr(uint64_t* ptr) {
+		VirtualQuery(ptr, &mbi_r, sizeof(mbi_r));
+
+		return (mbi_r.Protect & PAGE_READWRITE);
+	}
+
+	inline bool KeyState(const int& key) {
+		return ((GetAsyncKeyState(key) & 0x8000));
 	}
 
 	inline uint32_t FindRVA(const uintptr_t& module, const void* Address, const uint8_t MinLen, const uint8_t MaxLen) {
@@ -120,7 +135,7 @@ namespace Memory {
 	}
 
 	inline float stofmem(std::string_view str){
-		float value = 0.0F;
+		float value = 0.0f;
 		std::from_chars(str.data(), str.data() + str.size(), value);
 		return value;
 	}

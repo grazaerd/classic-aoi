@@ -1,23 +1,28 @@
-#define WIN32_LEAN_AND_MEAN
-// #include <windows.h>
 #include <thread>
+
 #include "proxy.hpp"
 #include "mem.hpp"
-#include <bit>
 #include "dxport.hpp"
 #include "util.hpp"
 #include "offset.hpp"
 #include "kiero.h"
 #include "present.hpp"
+#include "camera/fov.hpp"
+#include "config/config.hpp"
 
 HMODULE ourModule = nullptr;
 bool attached = false;
 
 void MainThread() {
 	util::HighResSleep(5000); // this is needed for classic
+
 	const OFS ofs;
 	SaveByte::SVFunc();
-	DXPORT::Initialize();
+    Config::GenerateConfig();
+    Config::GetConfig();
+
+    DXPORT::Initialize();
+	FOV::Initialize();
 	// bypass gpk crashes
 	// void* gpk1 = nullptr;
 	// void* gpk2 = nullptr;
@@ -33,12 +38,12 @@ void MainThread() {
 	// }
 	// temporary only
 	// todo fix later
-	if (ADRS::CamShake != nullptr) {
-        Memory::Patch(ADRS::CamShake, "\xC3", 1);
-	}
-	if (ADRS::CamBlur != nullptr) {
-        Memory::Patch(ADRS::CamBlur, "\xEB", 1);
-	}
+	// if (ADRS::CamShake != nullptr) {
+ //        Memory::Patch(ADRS::CamShake, "\xC3", 1);
+	// }
+	// if (ADRS::CamBlur != nullptr) {
+ //        Memory::Patch(ADRS::CamBlur, "\xEB", 1);
+	// }
 
     while (!attached) {
         util::HighResSleep(16);

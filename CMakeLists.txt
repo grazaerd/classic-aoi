@@ -18,7 +18,7 @@ set(ASMJIT_NO_FOREIGN TRUE)
 set(ASMJIT_NO_AARCH64 TRUE)
 
 # -Wl,-s causes Wacatac, need to manual llvm-strip -s .dll
-set(COMMON_FLAGS "-O3 -flto=full -ffast-math -march=x86-64-v2 -fuse-ld=lld -DNDEBUG -static -fno-delete-null-pointer-checks -fomit-frame-pointer -fdata-sections -ffunction-sections")
+set(COMMON_FLAGS "-O3 -DNDEBUG -flto=full -ffast-math -march=x86-64-v2 -fuse-ld=lld -DNDEBUG -static -fno-delete-null-pointer-checks -fomit-frame-pointer -fdata-sections -ffunction-sections")
 
 set(CMAKE_C_FLAGS "${COMMON_FLAGS} -fno-asynchronous-unwind-tables -fno-unwind-tables")
 set(CMAKE_CXX_FLAGS "${COMMON_FLAGS} -fvisibility=hidden -fvisibility-inlines-hidden -fno-rtti")
@@ -44,6 +44,12 @@ add_library(classic-aoi SHARED
             src/util.hpp
             src/present.cpp
             src/present.hpp
+            src/camera/camera.cpp
+            src/camera/camera.hpp
+            src/camera/fov.cpp
+            src/camera/fov.hpp
+            src/config/config.cpp
+            src/config/config.hpp
            )
 
 set(polyhook "${CMAKE_CURRENT_SOURCE_DIR}/lib/polyhook")
@@ -74,6 +80,7 @@ target_link_libraries(classic-aoi PRIVATE kiero)
 target_link_libraries(classic-aoi PRIVATE imgui)
 target_link_libraries(classic-aoi PRIVATE dwmapi)
 target_link_libraries(classic-aoi PRIVATE d3dcompiler)
+target_link_libraries(classic-aoi PRIVATE d3dx9)
 
 set_target_properties(classic-aoi PROPERTIES PREFIX "")
 set_target_properties(classic-aoi PROPERTIES OUTPUT_NAME "ddraw")

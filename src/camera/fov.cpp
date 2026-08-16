@@ -1,30 +1,39 @@
-#include "../state.hpp"
 #include "fov.hpp"
 #include "polyhook2/PE/IatHook.hpp"
+#include "../state.hpp"
 #include "../mem.hpp"
+#include "../offset.hpp"
 
 #include <d3dx9math.h>
 #include <memory>
 #include <numbers>
 
 std::unique_ptr<PLH::IatHook> fovhook;
-std::uint64_t fovcb = 0ULL;
+uint64_t fovcb = 0ULL;
 
 namespace FOV {
 
     D3DXMATRIX* HookedD3DXMatrixPerspectiveFovLH(D3DXMATRIX* pOut, FLOAT fovy, FLOAT Aspect, FLOAT zn, FLOAT zf) {
 
-        static constexpr float calculation = std::numbers::pi_v<float> / 180.0F;
+        static constexpr float calculation = std::numbers::pi_v<float> / 180.0f;
 
         if (ST::CamFOV) {
             fovy = ST::FOV * calculation;
         }
 
-    	return PLH::FnCast(fovcb, &D3DXMatrixPerspectiveFovLH)(pOut, fovy, Aspect, zn, zf);
+       	return D3DXMatrixPerspectiveFovLH(pOut, fovy, Aspect, zn, zf);
 
     }
 
-    void Hook() {
+    void Initialize() {
+
+        if (ADRS::SystemSettingsCall != nullptr) {
+            SSC = std::bit_cast<SystemSettingClose>(ADRS::SystemSettingsCall);
+    	}
+
+    	if (ADRS::SystemSettingsArgs != nullptr) {
+    		SSCArgs = Memory::moduleBase + Memory::FindRVA(Memory::moduleBase, ADRS::SystemSettingsArgs, 3, 7);
+    	}
 
         uint64_t pFovLH = 0ull;
 		static constexpr std::string_view FovLHByte = "FF 15 ?? ?? ?? ?? 4C 8D 84 24 ?? ?? ?? ?? 48 8B D3";

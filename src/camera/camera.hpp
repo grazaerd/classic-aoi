@@ -3,8 +3,8 @@
 
 namespace Cam {
 
-    void Gui();
-    
+    void GUI();
+
 }
 
 #endif
