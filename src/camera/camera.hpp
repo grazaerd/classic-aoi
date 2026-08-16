@@ -3,6 +3,8 @@
 
 namespace Cam {
 
+    void FuncHT();
+
     void GUI();
 
 }

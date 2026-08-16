@@ -8,6 +8,10 @@ namespace ADRS {
     // Cam
     inline void* CamShake = nullptr;
     inline void* CamBlur = nullptr;
+    inline void* CamZoomMountOffOffset = nullptr;
+    inline void* CamZoomCurrentOffset = nullptr;
+    inline void* CamZoomScrollOffset = nullptr;
+    inline void* CamZoomMountOffStatic = nullptr;
 
     // FOV
     inline void* SystemSettingsCall = nullptr;
@@ -39,6 +43,10 @@ public:
         // Cam
         Memory::PatternScan(CamShake, ADRS::CamShake);
         Memory::PatternScan(CamBlur, ADRS::CamBlur);
+        Memory::PatternScan(CamZoomMountOffOffset, ADRS::CamZoomMountOffOffset);
+        Memory::PatternScan(CamZoomCurrentOffset, ADRS::CamZoomCurrentOffset);
+        Memory::PatternScan(CamZoomScrollOffset, ADRS::CamZoomScrollOffset);
+        Memory::PatternScan(CamZoomMountOffStatic, ADRS::CamZoomMountOffStatic);
 
         // FOV
         Memory::PatternScan(SystemSettingsCall, ADRS::SystemSettingsCall);
@@ -52,6 +60,10 @@ private:
     // Cam
     const std::string_view CamShake = "40 56 48 83 ec ?? 48 8b f1 48 8b 49";
     const std::string_view CamBlur = "74 ?? F3 0F 10 49 ?? C6 05";
+    const std::string_view CamZoomMountOffOffset = "F3 0F 10 88 ?? ?? ?? ?? 0F 2F C8 72"; //150
+    const std::string_view CamZoomMountOffStatic = "48 8B 05 ?? ?? ?? ?? F3 0F 10 88 ?? ?? ?? ?? 0F 2F C8 72"; //150 static address
+    const std::string_view CamZoomCurrentOffset = "f3 0f 11 8f ?? ?? ?? ?? 44 89 b7"; //C34
+    const std::string_view CamZoomScrollOffset = "f3 0f 10 8f ?? ?? ?? ?? f3 0f 5e 05"; //C08
 
     // FOV
     const std::string_view SystemSettingsCall = "40 53 48 83 ec ?? 83 79 ?? ?? 48 8b d9 c7 41";
