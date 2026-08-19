@@ -5,18 +5,23 @@
 #include "fov.hpp"
 #include "../patch.hpp"
 #include <algorithm>
+#include <bit>
+#include <memory>
+#include <type_traits>
 
 #include "polyhook2/Detour/x64Detour.hpp"
 
 using CameraZoomHook = void(STDMETHODCALLTYPE*)();
 CameraZoomHook CZH = nullptr;
-std::uint64_t hookcam = 0ull;
+uint64_t hookcam = 0ull;
 
 float ZoomPreviousValue = 600.0f;
-std::uint64_t ZoomOffset1 = 0u; // BF8 //Scrollable Zoom
-std::uint64_t ZoomOffset2 = 0u; // C24 //Current Zoom
-std::uint64_t ZoomOffset3 = 0u; // 108 //Mount Off Zoom but unknown tbh
-std::uint64_t ZoomMountOffStatic = 0ull;
+uint64_t ZoomOffset1 = 0u; // BF8 //Scrollable Zoom
+uint64_t ZoomOffset2 = 0u; // C24 //Current Zoom
+uint64_t ZoomOffset3 = 0u; // 108 //Mount Off Zoom but unknown tbh
+uint64_t ZoomMountOffStatic = 0ull;
+
+std::unique_ptr<PLH::x64Detour> CamDetour;
 
 namespace Cam {
 
@@ -90,15 +95,24 @@ namespace Cam {
         if (ADRS::CamZoomScrollOffset != nullptr) {
     		ZoomOffset1 = *std::bit_cast<uint32_t*>(std::bit_cast<uintptr_t>(ADRS::CamZoomScrollOffset) + 4);
     	}
+        
     	if (ADRS::CamZoomCurrentOffset != nullptr) {
     		ZoomOffset2 = *std::bit_cast<uint32_t*>(std::bit_cast<uintptr_t>(ADRS::CamZoomCurrentOffset) + 4);
     	}
+     
     	if (ADRS::CamZoomMountOffOffset != nullptr) {
     		ZoomOffset3 = *std::bit_cast<uint32_t*>(std::bit_cast<uintptr_t>(ADRS::CamZoomMountOffOffset) + 4);
     	}
+     
     	if (ADRS::CamZoomMountOffStatic != nullptr) {
     		ZoomMountOffStatic = Memory::moduleBase + Memory::FindRVA(Memory::moduleBase, ADRS::CamZoomMountOffStatic, 3, 7);
     	}
+     
+        if (ADRS::CamZoomHook != nullptr) {
+            CamDetour = std::make_unique<PLH::x64Detour>(std::bit_cast<uint64_t>(ADRS::CamZoomHook), std::bit_cast<uint64_t>(&FuncHT), &hookcam);
+            // fix later
+            CamDetour->hook();
+        }
     }
 
 
