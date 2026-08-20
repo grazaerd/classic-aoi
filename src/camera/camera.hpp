@@ -7,6 +7,8 @@ namespace Cam {
 
     void GUI();
 
+    void Initialize();
+
 }
 
 #endif

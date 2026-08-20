@@ -1,5 +1,6 @@
 #include <thread>
 
+#include "camera/camera.hpp"
 #include "proxy.hpp"
 #include "mem.hpp"
 #include "dxport.hpp"
@@ -23,6 +24,7 @@ void MainThread() {
 
     DXPORT::Initialize();
 	FOV::Initialize();
+	Cam::Initialize();
 	// bypass gpk crashes
 	// void* gpk1 = nullptr;
 	// void* gpk2 = nullptr;
@@ -35,14 +37,6 @@ void MainThread() {
 	// }
 	// if (gpk2 != nullptr) {
 	// 	Memory::Patch(gpk2, "\xEB", 1);
-	// }
-	// temporary only
-	// todo fix later
-	// if (ADRS::CamShake != nullptr) {
- //        Memory::Patch(ADRS::CamShake, "\xC3", 1);
-	// }
-	// if (ADRS::CamBlur != nullptr) {
- //        Memory::Patch(ADRS::CamBlur, "\xEB", 1);
 	// }
 
     while (!attached) {

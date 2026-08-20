@@ -82,12 +82,12 @@ namespace Cam {
        		}
 		}
 		// Unimplemented
-		// ImGui::PushItemWidth(75);
-		// ImGui::AlignTextToFramePadding();
-		// ImGui::Text("Camera Zoom:");
-		// ImGui::SameLine();
-		// ImGui::InputFloat(" ", &ST::CamZoom, 0, 0, "%.0f", ImGuiInputTextFlags_CharsDecimal | ImGuiInputTextFlags_CharsNoBlank);
-		// ImGui::PopItemWidth();
+		ImGui::PushItemWidth(75);
+		ImGui::AlignTextToFramePadding();
+		ImGui::Text("Camera Zoom:");
+		ImGui::SameLine();
+		ImGui::InputFloat(" ", &ST::CamZoom, 0, 0, "%.0f", ImGuiInputTextFlags_CharsDecimal | ImGuiInputTextFlags_CharsNoBlank);
+		ImGui::PopItemWidth();
 
     }
 
@@ -111,7 +111,12 @@ namespace Cam {
         if (ADRS::CamZoomHook != nullptr) {
             CamDetour = std::make_unique<PLH::x64Detour>(std::bit_cast<uint64_t>(ADRS::CamZoomHook), std::bit_cast<uint64_t>(&FuncHT), &hookcam);
             // fix later
+            DWORD oldProtect;
+            VirtualProtectEx(Memory::hProcess, ADRS::CamZoomHook, sizeof(uint64_t), PAGE_EXECUTE_READWRITE, &oldProtect);
+            
             CamDetour->hook();
+            VirtualProtectEx(Memory::hProcess, ADRS::CamZoomHook, sizeof(uint64_t), oldProtect, &oldProtect);
+            
         }
     }
 
