@@ -64,7 +64,7 @@ private:
     const std::string_view CamBlur = "74 ?? F3 0F 10 49 ?? C6 05";
     const std::string_view CamZoomMountOffOffset = "F3 0F 10 88 ?? ?? ?? ?? 0F 2F C8 72"; //150
     const std::string_view CamZoomMountOffStatic = "48 8B 05 ?? ?? ?? ?? F3 0F 10 88 ?? ?? ?? ?? 0F 2F C8 72"; //150
-    const std::string_view CamZoomCurrentOffset = "f3 0f 11 8f ?? ?? ?? ?? 44 89 b7"; //C34
+    const std::string_view CamZoomCurrentOffset = "F3 0F 11 8F ?? ?? ?? ?? 44 89 AF"; //C34
     const std::string_view CamZoomScrollOffset = "f3 0f 10 8f ?? ?? ?? ?? f3 0f 5e 05"; //C08
     const std::string_view CamZoomHook = "f3 0f 10 9f ?? ?? ?? ?? 0f 28 cb";
 
