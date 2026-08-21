@@ -19,6 +19,7 @@ namespace Config {
             ini["Camera Mod"]["Camera Blur"] = "False";
             ini["Camera Mod"]["Modify FOV"] = "False";
             ini["Camera Mod"]["Camera FOV"] = Memory::ftos(ST::FOV);
+            ini["Camera Mod"]["Camera Zoom"] = Memory::ftos(ST::CamZoom);
 
             ini["Misc"]["Show GUI"] = "False";
 
@@ -34,6 +35,7 @@ namespace Config {
         ini["Camera Mod"]["Modify FOV"] = Memory::btos(ST::CamFOV);
 
         ini["Camera Mod"]["Camera FOV"] = Memory::ftos(ST::FOV);
+        ini["Camera Mod"]["Camera Zoom"] = Memory::ftos(ST::CamZoom);
 
         ini["Misc"]["Show GUI"] = Memory::btos(ST::Show);
 
@@ -51,6 +53,7 @@ namespace Config {
             ST::CamFOV = Memory::stob(ini["Camera Mod"]["Modify FOV"]);
             ST::FOV = Memory::stofmem(ini["Camera Mod"]["Camera FOV"]);
             ST::FOV = std::clamp(ST::FOV, ST::FOVmin, ST::FOVmax);
+            ST::CamZoom = Memory::stofmem(ini["Camera Mod"]["Camera Zoom"]);
 
             ST::Show = Memory::stob(ini["Misc"]["Show GUI"]);
 
