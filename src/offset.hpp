@@ -19,6 +19,9 @@ namespace ADRS {
     inline void* SystemSettingsArgs = nullptr;
     inline void* CamFOVCull = nullptr;
 
+    // Misc
+    inline void* SetSocket = nullptr;
+    inline void* Connect = nullptr;
 }
 
 // fix this
@@ -55,6 +58,10 @@ public:
         Memory::PatternScan(SystemSettingsArgs, ADRS::SystemSettingsArgs);
         Memory::PatternScan(CamFOVCull, ADRS::CamFOVCull);
 
+        // Misc
+        Memory::PatternScan(SetSocket, ADRS::SetSocket);
+        Memory::PatternScan(Connect, ADRS::Connect);
+
 
     }
 
@@ -72,6 +79,11 @@ private:
     const std::string_view SystemSettingsCall = "40 53 48 83 ec ?? 83 79 ?? ?? 48 8b d9 c7 41";
     const std::string_view SystemSettingsArgs = "48 8b 1d ?? ?? ?? ?? 48 89 b4 24";
     const std::string_view CamFOVCull = "48 8B CB E8 ?? ?? ?? ?? 84 C0 0F 85 ?? ?? ?? ?? 48 8B 4B ?? 48 85 C9";
+
+    // Misc
+    const std::string_view SetSocket = "ff 15 ?? ?? ?? ?? 83 f8 ?? 74 ?? 48 8b 53";
+    const std::string_view Connect = "FF 15 ?? ?? ?? ?? 48 8B 4B ?? 83 F8";
+    
 };
 
 template <typename T, uint64_t size>
