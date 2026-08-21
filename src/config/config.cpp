@@ -53,10 +53,14 @@ namespace Config {
             ST::CamFOV = Memory::stob(ini["Camera Mod"]["Modify FOV"]);
             ST::FOV = Memory::stofmem(ini["Camera Mod"]["Camera FOV"]);
             ST::FOV = std::clamp(ST::FOV, ST::FOVmin, ST::FOVmax);
+            
             ST::CamZoom = Memory::stofmem(ini["Camera Mod"]["Camera Zoom"]);
+            if (ST::CamZoom == 0.0f) {
+                ST::CamZoom = 600.0f;
+            }
 
             ST::Show = Memory::stob(ini["Misc"]["Show GUI"]);
-
+            SaveConfig();
         }
 
         for (std::uint8_t i = 0; i != pch::patch.size(); i++) { pch::patch.at(i)(); }
