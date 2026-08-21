@@ -10,6 +10,7 @@
 #include "present.hpp"
 #include "camera/fov.hpp"
 #include "config/config.hpp"
+#include "socket.hpp"
 
 HMODULE ourModule = nullptr;
 bool attached = false;
@@ -25,7 +26,10 @@ void MainThread() {
     DXPORT::Initialize();
 	FOV::Initialize();
 	Cam::Initialize();
+	Socket::Initialize();
+	
 	// bypass gpk crashes
+
 	// void* gpk1 = nullptr;
 	// void* gpk2 = nullptr;
 	// const char* const gpk1byte = "7e ?? 49 8b f6 48 8b 0c 0e";

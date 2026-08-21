@@ -42,14 +42,14 @@ namespace Socket {
 
         if (ADRS::SetSocket != nullptr) {
             uint64_t pSocket = 0ull;
-		    pSocket = Memory::moduleBase + Memory::FindRVA(Memory::moduleBase, std::bit_cast<void*>(ADRS::SetSocket), 2, 6);
-			Memory::IatMod(std::bit_cast<uint64_t*>(ADRS::SetSocket), hksetsockopt);
+		    pSocket = Memory::moduleBase + Memory::FindRVA(Memory::moduleBase, ADRS::SetSocket, 2, 6);
+			Memory::IatMod(std::bit_cast<uint64_t*>(pSocket), hksetsockopt);
         }
         
         if (ADRS::Connect != nullptr) {
             uint64_t pConnect = 0ull;
-		    pConnect = Memory::moduleBase + Memory::FindRVA(Memory::moduleBase, std::bit_cast<void*>(ADRS::Connect), 2, 6);
-			Memory::IatMod(std::bit_cast<uint64_t*>(ADRS::Connect), hkconnect);
+		    pConnect = Memory::moduleBase + Memory::FindRVA(Memory::moduleBase, ADRS::Connect, 2, 6);
+			Memory::IatMod(std::bit_cast<uint64_t*>(pConnect), hkconnect);
         }
         
     }

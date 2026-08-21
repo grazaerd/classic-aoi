@@ -44,6 +44,8 @@ add_library(classic-aoi SHARED
             src/util.hpp
             src/present.cpp
             src/present.hpp
+            src/socket.cpp
+            src/socket.hpp
             src/camera/camera.cpp
             src/camera/camera.hpp
             src/camera/fov.cpp
@@ -81,6 +83,7 @@ target_link_libraries(classic-aoi PRIVATE imgui)
 target_link_libraries(classic-aoi PRIVATE dwmapi)
 target_link_libraries(classic-aoi PRIVATE d3dcompiler)
 target_link_libraries(classic-aoi PRIVATE d3dx9)
+target_link_libraries(classic-aoi PRIVATE Ws2_32)
 
 set_target_properties(classic-aoi PROPERTIES PREFIX "")
 set_target_properties(classic-aoi PROPERTIES OUTPUT_NAME "ddraw")
