@@ -7,6 +7,7 @@
 #include "camera/camera.hpp"
 #include "mem.hpp"
 #include "config/config.hpp"
+#include "offset.hpp"
 
 #include <bit>
 
@@ -56,6 +57,32 @@ bool PresentInit(IDXGISwapChain* pSwapChain) {
 
 	return true;
 }
+
+void Tab() {
+	static constexpr float FloatX = 50.0F;
+	static constexpr float FloatY = 30.0F;
+
+	if (ImGui::Button("Camera", ImVec2(FloatX, FloatY))) { ST::tab = 0; }
+	ImGui::SameLine();
+	if (ImGui::Button("Debug", ImVec2(FloatX, FloatY))) { ST::tab = 1; }
+}
+
+void Debug() {
+    ImGui::Text("Camera Shake: %s", (ADRS::CamShake ? "Found" : "Not Found"));
+    ImGui::Text("Camera Blur: %s", (ADRS::CamBlur ? "Found" : "Not Found"));
+    ImGui::Text("Cam Offset 1: %s", (ADRS::CamZoomMountOffOffset ? "Found" : "Not Found"));
+    ImGui::Text("Cam Offset 2: %s", (ADRS::CamZoomCurrentOffset ? "Found" : "Not Found"));
+    ImGui::Text("Cam Offset 3: %s", (ADRS::CamZoomScrollOffset ? "Found" : "Not Found"));
+    ImGui::Text("Cam Offset 4: %s", (ADRS::CamZoomMountOffStatic ? "Found" : "Not Found"));
+    ImGui::Text("Cam Detour: %s", (ADRS::CamZoomHook ? "Found" : "Not Found"));
+    ImGui::Text("Settings Detour: %s", (ADRS::SystemSettingsCall ? "Found" : "Not Found"));
+    ImGui::Text("Settings Args: %s", (ADRS::SystemSettingsArgs ? "Found" : "Not Found"));
+    ImGui::Text("Camera FOV Cull: %s", (ADRS::CamFOVCull ? "Found" : "Not Found"));
+    ImGui::Text("Socket: %s", (ADRS::SetSocket ? "Found" : "Not Found"));
+    ImGui::Text("Connect: %s", (ADRS::Connect ? "Found" : "Not Found"));
+    
+}
+
 HRESULT HookPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT Flags) {
 
 	if (unlikely(!pDevice)) {
@@ -65,8 +92,7 @@ HRESULT HookPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT Flags) {
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
-	static constexpr auto flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoNav;
-	ImGui::SetNextWindowSize(ImVec2(250.0f, 150.0f), ImGuiCond_Always);
+	static constexpr auto flags = ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoNav;
 
 	if ((Memory::KeyState(VK_OEM_MINUS) && Memory::KeyState(VK_OEM_PLUS)) && !KeyPress) {
 		ST::Show = !ST::Show;
@@ -78,9 +104,10 @@ HRESULT HookPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT Flags) {
 
 	if (ST::Show) {
     	if (ImGui::Begin("Classic-aoi", nullptr, flags)) {
-
-    	    Cam::GUI();
-
+            Tab();
+            ImGui::Separator();
+    	    if (ST::tab == 0) { Cam::GUI(); }
+            if (ST::tab == 1) { Debug(); }
     	}
 	}
 
