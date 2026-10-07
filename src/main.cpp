@@ -16,7 +16,7 @@ HMODULE ourModule = nullptr;
 bool attached = false;
 
 void MainThread() {
-	util::HighResSleep(5000); // this is needed for classic
+	util::HighResSleep(10000); // this is needed for classic
 
 	const OFS ofs;
 	SaveByte::SVFunc();
