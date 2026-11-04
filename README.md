@@ -42,4 +42,4 @@ ninja
 ```
 
 ## Issue
-If you found an issue while using this, please create an issue on [Issues Section](https://github.com/grazaerd/dnclassic/issues), and make sure to test it thoroughly, without and with the mod. If the issue is hard to notice, attach a video, otherwise, attach a picture.
+If you found an issue while using this, please create an issue on [Issues Section](https://github.com/grazaerd/classic-aoi/issues), and make sure to test it thoroughly, without and with the mod. If the issue is hard to notice, attach a video, otherwise, attach a picture.
